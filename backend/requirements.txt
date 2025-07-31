@@ -1,0 +1,12 @@
+fastapi
+uvicorn
+sqlalchemy
+databases
+pydantic
+psycopg2-binary  # For PostgreSQL (or replace with mysql-connector-python)
+pytest
+pydantic_settings
+httpx
+pymysql
+aiomysql
+requests

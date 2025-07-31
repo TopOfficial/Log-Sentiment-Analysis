@@ -1,0 +1,16 @@
+__pycache__/
+.pytest_cache/
+credentials/
+logs/
+scripts/
+test_removal/
+weaviate-vector-store
+code/
+output_with_sentiment.csv
+.env
+venv
+.venv
+weaviate-meta.json
+node_modules
+sentiment_results
+transformed_logs

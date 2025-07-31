@@ -1,0 +1,82 @@
+services:
+  ollama:
+    image: ollama/ollama:latest
+    container_name: ollama
+    ports:
+      - "11434:11434"
+    volumes:
+      - ollama:/root/.ollama
+    environment:
+      - OLLAMA_HOST=http://ollama:11434
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    ports:
+      - "8000:8000"
+    environment:
+      - DATABASE_URL=${DATABASE_URL}
+      - APP_NAME=${APP_NAME}
+      - ENVIRONMENT=${ENVIRONMENT}
+      - DEBUG_MODE=${DEBUG_MODE}
+      - LOG_LEVEL=${LOG_LEVEL}
+    volumes:
+      - ./backend:/app
+    depends_on:
+      - llm
+    env_file:
+      - .env
+
+  frontend:
+    build:
+      context: ./llm-log-web
+      dockerfile: Dockerfile
+    ports:
+      # Change from 80:80 → to 80:3000
+      - "3000:3000"
+    depends_on:
+      - backend
+    # Optional: Add environment variables if needed
+    environment:
+      - REACT_APP_API_URL=http://backend:8000
+      - REACT_APP_LLM_API_URL=http://llm:8001
+
+  llm:
+    build:
+      context: ./solution_finding
+      dockerfile: Dockerfile
+    depends_on:
+      ollama:
+        condition: service_started
+    ports:
+      - "8001:8001"
+    volumes:
+      - ./solution_finding:/app
+    env_file:
+      - .env
+    environment:
+      - LANGSMITH_TRACING=${LANGSMITH_TRACING}
+      - LANGSMITH_API_KEY=${LANGSMITH_API_KEY}
+      - LANGCHAIN_PROJECT=${LANGCHAIN_PROJECT}
+
+  # sentiment:
+  #   build:
+  #     context: ./sentiment
+  #     dockerfile: Dockerfile
+  #   depends_on:
+  #     ollama:
+  #       condition: service_started
+  #   ports:
+  #     - "8002:8002"
+  #   volumes:
+  #     - ./sentiment:/app
+  #   env_file:
+  #     - .env
+  #   environment:
+  #     - LANGSMITH_TRACING=${LANGSMITH_TRACING}
+  #     - LANGSMITH_API_KEY=${LANGSMITH_API_KEY}
+  #     - LANGCHAIN_PROJECT=${LANGCHAIN_PROJECT}
+
+volumes:
+  db_data:
+  ollama:

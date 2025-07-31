@@ -1,0 +1,18 @@
+[project]
+name = "solution-finding"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+    "anyio>=4.9.0",
+    "bs4>=0.0.2",
+    "dotenv>=0.9.9",
+    "faiss-cpu>=1.11.0",
+    "fastapi>=0.115.12",
+    "langchain>=0.3.25",
+    "langchain-community>=0.3.24",
+    "langchain-huggingface>=0.2.0",
+    "pymupdf>=1.26.0",
+    "uvicorn>=0.34.3",
+]
